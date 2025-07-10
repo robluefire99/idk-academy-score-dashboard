@@ -65,15 +65,15 @@ export default function LecturerDashboard() {
 
   // Group scores by semester and subject
   const semesters = ['2024-S1', '2024-S2', '2025-S1', '2025-S2'];
-  const subjects = Array.from(new Set(scores.map(s => s.subject?.name)));
+  const subjects = Array.isArray(scores) ? Array.from(new Set(scores.map(s => s.subject?.name))) : [];
   const colors = ['#1976d2', '#d32f2f', '#388e3c', '#fbc02d', '#7b1fa2', '#0288d1'];
 
   // For each subject, plot a line for each semester
   const datasets = subjects.flatMap((subject, subjIdx) =>
     semesters.map((semester, semIdx) => {
-      const data = scores
-        .filter(s => s.subject?.name === subject && s.semester === semester)
-        .map(s => s.score);
+      const data = Array.isArray(scores)
+        ? scores.filter(s => s.subject?.name === subject && s.semester === semester).map(s => s.score)
+        : [];
       return {
         label: `${subject} (${semester})`,
         data,
@@ -83,7 +83,7 @@ export default function LecturerDashboard() {
     })
   );
   // Use student names as labels (for the current page)
-  const chartLabels = scores.map(s => s.student.name);
+  const chartLabels = Array.isArray(scores) ? scores.map(s => s.student?.name || '—') : [];
 
   return (
     <div className="dashboard-container">

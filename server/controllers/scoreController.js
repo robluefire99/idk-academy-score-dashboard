@@ -8,8 +8,9 @@ exports.getScores = async (req, res) => {
   const { studentId, page = 1, limit = 5 } = req.query;
   const filter = { student: req.user.role === 'student' ? req.user._id : studentId };
   const docs = await Score.find(filter)
-                          .skip((page - 1) * limit)
-                          .limit(Number(limit));
+    .populate({ path: 'subject', populate: { path: 'lecturer', select: 'name' } })
+    .skip((page - 1) * limit)
+    .limit(Number(limit));
   const total = await Score.countDocuments(filter);
   res.json({
     docs,

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchScores } from '../redux/scoreSlice';
 import { fetchSubjects, pickSubject } from '../redux/studentSlice';
+import { loadMe } from '../redux/authSlice';
 import Chart from '../components/Chart';
 import FeedbackModal from '../components/FeedbackModal';
 import { useNavigate } from 'react-router-dom';
@@ -35,8 +36,8 @@ export default function StudentDashboard() {
   const handlePickSubject = async () => {
     if (!subjectId) return;
     await dispatch(pickSubject(subjectId));
+    await dispatch(loadMe()); // Refresh user info in Redux
     setShowPicker(false);
-    window.location.reload(); // reload to update user info
   };
 
   if (showPicker) {
@@ -63,11 +64,12 @@ export default function StudentDashboard() {
         <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
       </div>
       <table className="dashboard-table">
-        <thead><tr><th>Subject</th><th>Score</th><th>Feedback</th></tr></thead>
+        <thead><tr><th>Subject</th><th>Lecturer</th><th>Score</th><th>Feedback</th></tr></thead>
         <tbody>
-          {scores.map(s=>(
+          {(Array.isArray(scores) ? scores : []).map(s=>(
             <tr key={s._id}>
-              <td>{s.subject.name}</td>
+              <td>{s.subject?.name || '—'}</td>
+              <td>{s.subject?.lecturer?.name || '—'}</td>
               <td>{s.score ?? '—'}</td>
               <td>{s.feedback ? <button onClick={()=>setFeedbackMsg(s.feedback)}>View</button> : 'No Feedback'}</td>
             </tr>
@@ -75,7 +77,7 @@ export default function StudentDashboard() {
         </tbody>
       </table>
       <h2 style={{ color: '#1976d2', marginTop: 32, marginBottom: 12 }}>Progress Chart</h2>
-      <Chart labels={scores.map(s=>s.subject.name)} data={scores.map(s=>s.score||0)} />
+      <Chart labels={(Array.isArray(scores) ? scores : []).map(s=>s.subject?.name || '—')} data={(Array.isArray(scores) ? scores : []).map(s=>s.score||0)} />
       <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
     </div>
   )
