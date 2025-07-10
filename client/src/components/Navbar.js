@@ -17,6 +17,9 @@ export default function Navbar() {
 
   return (
     <nav className="main-navbar">
+      <span className="nav-app-title" style={{ fontWeight: 'bold', color: '#1976d2', fontSize: 20, marginRight: 24 }}>
+        IDK Academy Score Dashboard
+      </span>
       <Link to="/" className="nav-link">Home</Link>
       {!user && <><Link to="/login" className="nav-link">Login</Link><Link to="/register" className="nav-link">Register</Link></>}
       {user && user.role === 'lecturer' && <Link to="/lecturer" className="nav-link">Lecturer Dashboard</Link>}

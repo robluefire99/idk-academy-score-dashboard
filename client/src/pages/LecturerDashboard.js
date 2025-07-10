@@ -88,6 +88,7 @@ export default function LecturerDashboard() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-title">Lecturer Dashboard</div>
+      <h2 style={{ color: '#1976d2', margin: '12px 0 20px 0', textAlign: 'center' }}>IDK Academy Score Dashboard</h2>
       <div className="dashboard-controls">
         <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>Prev</button>
         <span>{page} / {meta.totalPages}</span>

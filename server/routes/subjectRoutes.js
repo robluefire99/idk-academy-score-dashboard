@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const passport = require('passport');
 const subjCtrl = require('../controllers/subjectController');
 
-router.get('/', passport.authenticate('jwt', { session: false }), subjCtrl.getSubjects);
+// Public access for subject list
+router.get('/', subjCtrl.getSubjects);
 
 module.exports = router;

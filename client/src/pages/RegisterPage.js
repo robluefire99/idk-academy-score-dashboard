@@ -48,6 +48,7 @@ export default function RegisterPage() {
     <div className="main-form">
       <div className="form-title">Register</div>
       {message && <div className="success-msg">{message}</div>}
+      {/* <pre style={{color:'red',fontSize:12}}>{JSON.stringify(subjects, null, 2)}</pre> */}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <input
           placeholder="Name"
@@ -81,13 +82,13 @@ export default function RegisterPage() {
           <option value="student">Student</option>
           <option value="lecturer">Lecturer</option>
         </select>
-        <select onChange={e => setForm({ ...form, subject: e.target.value })} value={form.subject || ''}>
+        <select onChange={e => setForm({ ...form, subject: e.target.value })} value={form.subject || ''} required disabled={subjects.length === 0}>
           <option value="">Select Subject</option>
           {subjects.map(s => (
-            <option key={s._id} value={s._id}>{s.name} (Lecturer: {s.lecturer?.name || s.lecturer})</option>
+            <option key={s._id} value={s._id}>{s.name}</option>
           ))}
         </select>
-        <button type="submit">Register</button>
+        <button type="submit" disabled={subjects.length === 0}>Register</button>
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
         <a
