@@ -20,6 +20,7 @@ export default function RegisterPage() {
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [subjects, setSubjects] = useState([]);
+  const [showSubjectPicker, setShowSubjectPicker] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,10 @@ export default function RegisterPage() {
       .then(res => setSubjects(res.data))
       .catch(() => setSubjects([]));
   }, []);
+
+  useEffect(() => {
+    setShowSubjectPicker(form.role === 'lecturer');
+  }, [form.role]);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -78,17 +83,19 @@ export default function RegisterPage() {
             )}
           </button>
         </div>
-        <select onChange={e => setForm({ ...form, role: e.target.value })} value={form.role}>
+        <select onChange={e => setForm({ ...form, role: e.target.value, subject: undefined })} value={form.role}>
           <option value="student">Student</option>
           <option value="lecturer">Lecturer</option>
         </select>
-        <select onChange={e => setForm({ ...form, subject: e.target.value })} value={form.subject || ''} required disabled={subjects.length === 0}>
-          <option value="">Select Subject</option>
-          {subjects.map(s => (
-            <option key={s._id} value={s._id}>{s.name}</option>
-          ))}
-        </select>
-        <button type="submit" disabled={subjects.length === 0}>Register</button>
+        {showSubjectPicker && (
+          <select onChange={e => setForm({ ...form, subject: e.target.value })} value={form.subject || ''} required>
+            <option value="">Select Subject</option>
+            {subjects.map(s => (
+              <option key={s._id} value={s._id}>{s.name}</option>
+            ))}
+          </select>
+        )}
+        <button type="submit" disabled={form.role === 'lecturer' && subjects.length === 0}>Register</button>
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
         <a

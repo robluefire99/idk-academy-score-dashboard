@@ -9,8 +9,10 @@ exports.register = async (req, res, next) => {
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: 'That email is already registered.' });
     }
-    // Always set isVerified: true and save subject as ObjectId if provided
-    const user = await User.create({ name, email, password, role, subject: subject || undefined, gender, isVerified: true });
+    // Only save subject if role is lecturer
+    const userData = { name, email, password, role, gender, isVerified: true };
+    if (role === 'lecturer' && subject) userData.subject = subject;
+    const user = await User.create(userData);
     res.status(201).json({ message: 'Registered! You can now log in.' });
   } catch (e) { next(e); }
 };
