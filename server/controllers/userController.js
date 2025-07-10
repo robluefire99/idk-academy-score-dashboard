@@ -17,6 +17,7 @@ exports.pickSubject = async (req, res) => {
   if (!subjectId) return res.status(400).json({ message: 'Subject ID is required.' });
   req.user.subject = subjectId;
   await req.user.save();
+  console.log('Student subject updated:', req.user.subject);
   res.json({ message: 'Subject updated', subject: subjectId });
 };
 
@@ -27,7 +28,9 @@ exports.getMyStudents = async (req, res) => {
   // Find subjects taught by this lecturer
   const subjects = await Subject.find({ lecturer: req.user._id });
   const subjectIds = subjects.map(s => s._id);
+  console.log('Subjects taught by lecturer:', subjectIds);
   // Find students who picked any of these subjects
   const students = await User.find({ role: 'student', subject: { $in: subjectIds } }).populate('subject');
+  console.log('Students found:', students);
   res.json(students);
 };

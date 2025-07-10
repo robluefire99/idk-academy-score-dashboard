@@ -97,19 +97,23 @@ export default function LecturerDashboard() {
       <Chart labels={chartLabels} datasets={datasets} />
       <div style={{margin:'20px 0'}}>
         <h3>Students for Your Subject(s):</h3>
-        <ul>
-          {students.map(s => (
-            <li key={s._id}>{s.name} ({s.email}) - {s.subject?.name || 'No subject'}</li>
-          ))}
-        </ul>
+        {Array.isArray(students) && students.length > 0 ? (
+          <ul>
+            {students.map(s => (
+              <li key={s._id}>{s.name} ({s.email}) - {s.subject?.name || 'No subject'}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No students have picked your subjects yet.</p>
+        )}
       </div>
-      <StudentList students={scores.map(s=>({ _id: s._id, name: s.student.name }))} onSelect={setSelectedScore}/>
+      <StudentList students={(Array.isArray(scores) ? scores : []).map(s=>({ _id: s._id, name: s.student.name }))} onSelect={setSelectedScore}/>
       <ScoreForm onSubmit={handleSave} initial={selectedScore||{}} />
       <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
       <table className="dashboard-table">
         <thead><tr><th>Student</th><th>Score</th><th>Feedback</th></tr></thead>
         <tbody>
-          {scores.map(s => (
+          {Array.isArray(scores) ? scores.map(s => (
             <tr key={s._id}>
               <td>{s.student.name}</td>
               <td>{s.score}</td>
@@ -119,13 +123,11 @@ export default function LecturerDashboard() {
                   placeholder="Write feedback..."
                   value={feedbackInputs[s._id] || ''}
                   onChange={e => handleFeedbackChange(s._id, e.target.value)}
-                  style={{ width: 120 }}
                 />
-                <button onClick={() => handleSendFeedback(s._id)} disabled={!feedbackInputs[s._id]}>Send</button>
-                {s.feedback && <span style={{ marginLeft: 8, color: 'green' }}>Sent</span>}
+                <button onClick={() => handleSendFeedback(s._id)}>Send</button>
               </td>
             </tr>
-          ))}
+          )) : null}
         </tbody>
       </table>
     </div>
