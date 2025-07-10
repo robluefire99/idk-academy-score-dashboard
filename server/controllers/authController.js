@@ -9,8 +9,8 @@ exports.register = async (req, res, next) => {
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: 'That email is already registered.' });
     }
-    // Set isVerified: true by default, and include subject/gender if provided
-    const user = await User.create({ name, email, password, role, subject, gender, isVerified: true });
+    // Always set isVerified: true and save subject as ObjectId if provided
+    const user = await User.create({ name, email, password, role, subject: subject || undefined, gender, isVerified: true });
     res.status(201).json({ message: 'Registered! You can now log in.' });
   } catch (e) { next(e); }
 };

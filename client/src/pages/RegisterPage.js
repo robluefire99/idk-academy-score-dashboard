@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/modern.css';
@@ -16,16 +16,27 @@ const googleIcon = (
 );
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({ role: 'student' });
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [subjects, setSubjects] = useState([]);
   const navigate = useNavigate();
 
-  const handleSubmit = e => {
+  useEffect(() => {
+    // Fetch all subjects for subject select
+    axios.get('/api/subjects')
+      .then(res => setSubjects(res.data))
+      .catch(() => setSubjects([]));
+  }, []);
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    axios.post('/api/auth/register', form)
+    // Only send subject if selected
+    const payload = { ...form };
+    if (!payload.subject) delete payload.subject;
+    axios.post('/api/auth/register', payload)
       .then(() => {
-        setMessage('Registration successful! Please check your email to verify your account.');
+        setMessage('Registration successful! You can now log in.');
         setTimeout(() => navigate('/login'), 2000);
       })
       .catch(err => {
@@ -66,19 +77,16 @@ export default function RegisterPage() {
             )}
           </button>
         </div>
-        <select onChange={e => setForm({ ...form, role: e.target.value })}>
+        <select onChange={e => setForm({ ...form, role: e.target.value })} value={form.role}>
           <option value="student">Student</option>
           <option value="lecturer">Lecturer</option>
         </select>
-        {/* Show subject select if role is lecturer */}
-        {form.role === 'lecturer' && (
-          <select onChange={e => setForm({ ...form, subject: e.target.value })}>
-            <option value="">Select Subject</option>
-            <option value="JavaScript">JavaScript</option>
-            <option value="Cybersecurity">Cybersecurity</option>
-            <option value="AI Ethics & Security">AI Ethics & Security</option>
-          </select>
-        )}
+        <select onChange={e => setForm({ ...form, subject: e.target.value })} value={form.subject || ''}>
+          <option value="">Select Subject</option>
+          {subjects.map(s => (
+            <option key={s._id} value={s._id}>{s.name} (Lecturer: {s.lecturer?.name || s.lecturer})</option>
+          ))}
+        </select>
         <button type="submit">Register</button>
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>

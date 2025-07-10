@@ -20,7 +20,7 @@ connectDB();
         email: l.email,
         password: hashed,
         role: 'lecturer',
-        subject: l.subject,
+        gender: l.gender,
         isVerified: true
       });
       console.log(`Created ${l.email}`);
