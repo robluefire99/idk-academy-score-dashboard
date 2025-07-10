@@ -18,6 +18,7 @@ const googleIcon = (
 export default function RegisterPage() {
   const [form, setForm] = useState({});
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = e => {
@@ -45,11 +46,26 @@ export default function RegisterPage() {
           placeholder="Email"
           onChange={e => setForm({ ...form, email: e.target.value })}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={e => setForm({ ...form, password: e.target.value })}
-        />
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            onChange={e => setForm({ ...form, password: e.target.value })}
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword(v => !v)}
+            tabIndex={-1}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1976d2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 1l22 22"/><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-5 0-9.27-3.11-11-7.5a11.05 11.05 0 0 1 5.17-5.92"/><path d="M9.53 9.53A3.5 3.5 0 0 0 12 15.5c1.38 0 2.63-.83 3.16-2.03"/><path d="M14.47 14.47A3.5 3.5 0 0 1 12 8.5c-.41 0-.8.07-1.17.2"/></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1976d2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="12" rx="10" ry="7"/><circle cx="12" cy="12" r="3.5"/></svg>
+            )}
+          </button>
+        </div>
         <select onChange={e => setForm({ ...form, role: e.target.value })}>
           <option value="student">Student</option>
           <option value="lecturer">Lecturer</option>
@@ -57,8 +73,12 @@ export default function RegisterPage() {
         <button type="submit">Register</button>
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
-        <a href="/api/auth/google" style={{ textDecoration: 'none' }}>
-          <button type="button" className="google-btn">{googleIcon} Register with Google</button>
+        <a
+          href="/api/auth/google"
+          className="google-btn"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none' }}
+        >
+          {googleIcon} Register with Google
         </a>
       </div>
     </div>

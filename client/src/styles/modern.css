@@ -128,6 +128,29 @@ body {
   align-items: center;
   margin-bottom: 18px;
 }
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+.password-input-wrapper input[type="password"],
+.password-input-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 38px; /* space for the eye icon */
+  box-sizing: border-box;
+}
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
 @media (max-width: 700px) {
   .main-form, .dashboard-container {
     padding: 12px 4px;

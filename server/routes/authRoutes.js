@@ -6,7 +6,10 @@ router.post('/register', authCtrl.register);
 router.post('/login',    authCtrl.login);
 router.get('/verify/:token', authCtrl.verifyEmail);
 router.get('/me', passport.authenticate('jwt', { session: false }), authCtrl.getMe);
-router.get('/google', passport.authenticate('google', { scope: ['profile','email'] }));
+router.get('/google', (req, res, next) => {
+  console.log('Google OAuth endpoint hit');
+  next();
+}, passport.authenticate('google', { scope: ['profile','email'] }));
 router.get(
   '/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: '/login' }),
