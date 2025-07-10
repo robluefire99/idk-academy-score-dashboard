@@ -1,0 +1,5 @@
+[
+  { "name": "Kim Jong-un",   "email": "kimjongun@idk-lecturer.com",   "password": "password123", "subject": "JavaScript" },
+  { "name": "Yim Si-wan",    "email": "yimsiwan@idk-lecturer.com",    "password": "password123", "subject": "Cybersecurity" },
+  { "name": "Lee Jung-jae",  "email": "leejungjae@idk-lecturer.com",  "password": "password123", "subject": "AI Ethics & Security" }
+]
