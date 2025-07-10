@@ -6,6 +6,7 @@ import ScoreForm from '../components/ScoreForm';
 import FeedbackModal from '../components/FeedbackModal';
 import Chart from '../components/Chart';
 import { useNavigate } from 'react-router-dom';
+import '../styles/modern.css';
 
 export default function LecturerDashboard() {
   const dispatch = useDispatch();
@@ -74,18 +75,18 @@ export default function LecturerDashboard() {
   const chartLabels = scores.map(s => s.student.name);
 
   return (
-    <div>
-      <h1>Lecturer Dashboard</h1>
-      <StudentList students={scores.map(s=>({ _id: s._id, name: s.student.name }))} onSelect={setSelectedScore}/>
-      <ScoreForm onSubmit={handleSave} initial={selectedScore||{}} />
-      <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
-      <div>
+    <div className="dashboard-container">
+      <div className="dashboard-title">Lecturer Dashboard</div>
+      <div className="dashboard-controls">
         <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>Prev</button>
         <span>{page} / {meta.totalPages}</span>
         <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
       </div>
       <Chart labels={chartLabels} datasets={datasets} />
-      <table>
+      <StudentList students={scores.map(s=>({ _id: s._id, name: s.student.name }))} onSelect={setSelectedScore}/>
+      <ScoreForm onSubmit={handleSave} initial={selectedScore||{}} />
+      <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
+      <table className="dashboard-table">
         <thead><tr><th>Student</th><th>Score</th><th>Feedback</th></tr></thead>
         <tbody>
           {scores.map(s => (

@@ -4,6 +4,7 @@ import { fetchScores } from '../redux/scoreSlice';
 import Chart from '../components/Chart';
 import FeedbackModal from '../components/FeedbackModal';
 import { useNavigate } from 'react-router-dom';
+import '../styles/modern.css';
 
 export default function StudentDashboard() {
   const dispatch = useDispatch();
@@ -24,9 +25,14 @@ export default function StudentDashboard() {
   }, [dispatch, page]);
 
   return (
-    <div>
-      <h1>My Course Scores</h1>
-      <table>
+    <div className="dashboard-container">
+      <div className="dashboard-title">My Course Scores</div>
+      <div className="dashboard-controls">
+        <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>Prev</button>
+        <span>{page} / {meta.totalPages||1}</span>
+        <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
+      </div>
+      <table className="dashboard-table">
         <thead><tr><th>Subject</th><th>Score</th><th>Feedback</th></tr></thead>
         <tbody>
           {scores.map(s=>(
@@ -38,12 +44,7 @@ export default function StudentDashboard() {
           ))}
         </tbody>
       </table>
-      <div>
-        <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>Prev</button>
-        <span>{page} / {meta.totalPages||1}</span>
-        <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
-      </div>
-      <h2>Progress Chart</h2>
+      <h2 style={{ color: '#1976d2', marginTop: 32, marginBottom: 12 }}>Progress Chart</h2>
       <Chart labels={scores.map(s=>s.subject.name)} data={scores.map(s=>s.score||0)} />
       <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
     </div>
