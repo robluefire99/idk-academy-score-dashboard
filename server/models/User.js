@@ -7,7 +7,8 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   role:     { type: String, enum: ['admin','lecturer','student'], default: 'student' },
   gender:   { type: String, enum: ['M','F'] },
-  isVerified: { type: Boolean, default: false }
+  isVerified: { type: Boolean, default: false },
+  verificationToken: { type: String }
 }, { timestamps: true });
 
 userSchema.methods.matchPassword = function(entered) {

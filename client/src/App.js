@@ -7,6 +7,7 @@ import LecturerDashboard from './pages/LecturerDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import OAuthHandler from './pages/OAuthHandler';
 import NotFoundPage from './pages/NotFoundPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/lecturer" element={<LecturerDashboard />} />
         <Route path="/student" element={<StudentDashboard />} />
         <Route path="/oauth" element={<OAuthHandler />} />
+        <Route path="/verify/:token" element={<VerifyEmailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

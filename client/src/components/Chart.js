@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import ChartJS from 'chart.js/auto';
 
-export default function Chart({ data, labels }) {
+// Accepts datasets: [{ label, data, borderColor, backgroundColor }], labels
+export default function Chart({ datasets, labels }) {
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -9,14 +10,11 @@ export default function Chart({ data, labels }) {
       type: 'line',
       data: {
         labels,
-        datasets: [
-          {
-            label: 'Score Progress',
-            data,
-            fill: false,
-            tension: 0.1
-          }
-        ]
+        datasets: datasets.map(ds => ({
+          ...ds,
+          fill: false,
+          tension: 0.1
+        }))
       },
       options: {
         scales: {
@@ -24,9 +22,8 @@ export default function Chart({ data, labels }) {
         }
       }
     });
-
     return () => chart.destroy();
-  }, [data, labels]);
+  }, [datasets, labels]);
 
   return <canvas ref={canvasRef} />;
 }

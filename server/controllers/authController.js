@@ -9,8 +9,8 @@ exports.register = async (req, res, next) => {
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: 'That email is already registered.' });
     }
-    const user = await User.create({ name, email, password, role });
     const token = crypto.randomBytes(20).toString('hex');
+    const user = await User.create({ name, email, password, role, verificationToken: token });
     await emailService.sendVerificationEmail(user, token);
     res.status(201).json({ message: 'Registered! Check email.' });
   } catch (e) { next(e); }
@@ -32,7 +32,17 @@ exports.login = async (req, res, next) => {
 };
 
 exports.verifyEmail = async (req, res) => {
-  res.json({ message: 'Email verified' });
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) return res.status(400).json({ message: 'Invalid or expired verification link.' });
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+    res.json({ message: 'Email verified successfully!' });
+  } catch (e) {
+    res.status(500).json({ message: 'Server error.' });
+  }
 };
 
 exports.getMe = (req, res) => {

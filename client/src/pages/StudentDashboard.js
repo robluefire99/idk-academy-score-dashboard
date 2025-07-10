@@ -3,12 +3,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchScores } from '../redux/scoreSlice';
 import Chart from '../components/Chart';
 import FeedbackModal from '../components/FeedbackModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function StudentDashboard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(s => s.auth.user);
   const { list: scores, meta } = useSelector(s => s.score);
   const [page, setPage] = useState(1);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+
+  useEffect(() => {
+    if (!user || user.role !== 'student') {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     dispatch(fetchScores({ page, limit: 15 }));
@@ -38,4 +47,5 @@ export default function StudentDashboard() {
       <Chart labels={scores.map(s=>s.subject.name)} data={scores.map(s=>s.score||0)} />
       <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />
     </div>
+  )
 }

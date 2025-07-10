@@ -32,6 +32,16 @@ export const updateScore = createAsyncThunk(
   }
 );
 
+export const updateFeedback = createAsyncThunk(
+  'score/updateFeedback',
+  async ({ id, feedback }, thunkAPI) => {
+    const token = thunkAPI.getState().auth.token;
+    return axios
+      .put(`${API}/${id}`, { feedback }, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.data);
+  }
+);
+
 const scoreSlice = createSlice({
   name: 'score',
   initialState: { list: [], meta: {} },
