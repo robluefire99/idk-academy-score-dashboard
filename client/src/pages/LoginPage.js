@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../redux/authSlice';
 import '../styles/modern.css';
 
@@ -19,6 +20,15 @@ export default function LoginPage() {
   const [creds, setCreds] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const user = useSelector(s => s.auth.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'lecturer') navigate('/lecturer');
+      else if (user.role === 'student') navigate('/student');
+    }
+  }, [user, navigate]);
 
   return (
     <div className="main-form">
@@ -53,7 +63,7 @@ export default function LoginPage() {
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
         <a
-          href="/api/auth/google"
+          href="http://localhost:5000/api/auth/google"
           className="google-btn"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none' }}
         >

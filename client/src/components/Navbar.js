@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/authSlice';
+import '../styles/modern.css';
 
 export default function Navbar() {
   const user = useSelector(s => s.auth.user);
@@ -15,17 +16,17 @@ export default function Navbar() {
   };
 
   return (
-    <nav style={{ display: 'flex', gap: 16, alignItems: 'center', padding: 8 }}>
-      <Link to="/">Home</Link>
-      {!user && <><Link to="/login">Login</Link><Link to="/register">Register</Link></>}
-      {user && user.role === 'lecturer' && <Link to="/lecturer">Lecturer Dashboard</Link>}
-      {user && user.role === 'student' && <Link to="/student">Student Dashboard</Link>}
+    <nav className="main-navbar">
+      <Link to="/" className="nav-link">Home</Link>
+      {!user && <><Link to="/login" className="nav-link">Login</Link><Link to="/register" className="nav-link">Register</Link></>}
+      {user && user.role === 'lecturer' && <Link to="/lecturer" className="nav-link">Lecturer Dashboard</Link>}
+      {user && user.role === 'student' && <Link to="/student" className="nav-link">Student Dashboard</Link>}
       {user && (
         <>
-          <span style={{ marginLeft: 16 }}>
+          <span className="nav-user-info">
             Welcome, {user.name} ({user.role.charAt(0).toUpperCase() + user.role.slice(1)})
           </span>
-          <button style={{ marginLeft: 16 }} onClick={handleLogout}>Logout</button>
+          <button className="nav-logout-btn" onClick={handleLogout}>Logout</button>
         </>
       )}
     </nav>

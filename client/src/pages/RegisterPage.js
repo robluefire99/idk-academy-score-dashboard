@@ -74,7 +74,7 @@ export default function RegisterPage() {
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
         <a
-          href="/api/auth/google"
+          href="http://localhost:5000/api/auth/google"
           className="google-btn"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none' }}
         >
