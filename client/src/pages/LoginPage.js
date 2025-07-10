@@ -19,7 +19,9 @@ export default function LoginPage() {
         onChange={e => setCreds({ ...creds, password: e.target.value })}
       />
       <button type="submit">Login</button>
-      <a href="/api/auth/google"><button type="button">Login with Google</button></a>
+      <a href="/api/auth/google">
+        <button type="button">Login with Google</button>
+      </a>
     </form>
   );
 }
