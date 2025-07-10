@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchScores } from '../redux/scoreSlice';
+import { fetchSubjects, pickSubject } from '../redux/studentSlice';
 import Chart from '../components/Chart';
 import FeedbackModal from '../components/FeedbackModal';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +12,11 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
   const { list: scores, meta } = useSelector(s => s.score);
+  const { subjects } = useSelector(s => s.student);
   const [page, setPage] = useState(1);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+  const [subjectId, setSubjectId] = useState(user?.subject || '');
+  const [showPicker, setShowPicker] = useState(!user?.subject);
 
   useEffect(() => {
     if (!user || user.role !== 'student') {
@@ -23,6 +27,32 @@ export default function StudentDashboard() {
   useEffect(() => {
     dispatch(fetchScores({ page, limit: 15 }));
   }, [dispatch, page]);
+
+  useEffect(() => {
+    if (showPicker) dispatch(fetchSubjects());
+  }, [dispatch, showPicker]);
+
+  const handlePickSubject = async () => {
+    if (!subjectId) return;
+    await dispatch(pickSubject(subjectId));
+    setShowPicker(false);
+    window.location.reload(); // reload to update user info
+  };
+
+  if (showPicker) {
+    return (
+      <div className="dashboard-container">
+        <div className="dashboard-title">Pick Your Subject</div>
+        <select value={subjectId} onChange={e => setSubjectId(e.target.value)}>
+          <option value="">Select a subject</option>
+          {subjects.map(s => (
+            <option key={s._id} value={s._id}>{s.name} (Lecturer: {s.lecturer?.name || s.lecturer})</option>
+          ))}
+        </select>
+        <button onClick={handlePickSubject} disabled={!subjectId}>Save</button>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">

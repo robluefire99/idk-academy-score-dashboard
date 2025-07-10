@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchScores, createScore, updateScore, updateFeedback } from '../redux/scoreSlice';
+import { fetchMyStudents } from '../redux/lecturerSlice';
 import StudentList from '../components/StudentList';
 import ScoreForm from '../components/ScoreForm';
 import FeedbackModal from '../components/FeedbackModal';
@@ -17,6 +18,7 @@ export default function LecturerDashboard() {
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [page, setPage] = useState(1);
   const [feedbackInputs, setFeedbackInputs] = useState({});
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     if (!user || user.role !== 'lecturer') {
@@ -27,6 +29,15 @@ export default function LecturerDashboard() {
   useEffect(() => {
     dispatch(fetchScores({ page, limit: 15 }));
   }, [dispatch, page]);
+
+  // Fetch students for this lecturer
+  useEffect(() => {
+    async function getStudents() {
+      const res = await dispatch(fetchMyStudents());
+      if (res.payload) setStudents(res.payload);
+    }
+    if (user && user.role === 'lecturer') getStudents();
+  }, [dispatch, user]);
 
   const handleSave = async ({ score }) => {
     if (selectedScore) {
@@ -83,6 +94,14 @@ export default function LecturerDashboard() {
         <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
       </div>
       <Chart labels={chartLabels} datasets={datasets} />
+      <div style={{margin:'20px 0'}}>
+        <h3>Students for Your Subject(s):</h3>
+        <ul>
+          {students.map(s => (
+            <li key={s._id}>{s.name} ({s.email}) - {s.subject?.name || 'No subject'}</li>
+          ))}
+        </ul>
+      </div>
       <StudentList students={scores.map(s=>({ _id: s._id, name: s.student.name }))} onSelect={setSelectedScore}/>
       <ScoreForm onSubmit={handleSave} initial={selectedScore||{}} />
       <FeedbackModal feedback={feedbackMsg} onClose={()=>setFeedbackMsg('')} />

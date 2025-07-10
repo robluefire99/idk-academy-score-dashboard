@@ -5,14 +5,13 @@ const emailService = require('../services/emailService');
 
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, subject, gender } = req.body;
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: 'That email is already registered.' });
     }
-    const token = crypto.randomBytes(20).toString('hex');
-    const user = await User.create({ name, email, password, role, verificationToken: token });
-    await emailService.sendVerificationEmail(user, token);
-    res.status(201).json({ message: 'Registered! Check email.' });
+    // Set isVerified: true by default, and include subject/gender if provided
+    const user = await User.create({ name, email, password, role, subject, gender, isVerified: true });
+    res.status(201).json({ message: 'Registered! You can now log in.' });
   } catch (e) { next(e); }
 };
 

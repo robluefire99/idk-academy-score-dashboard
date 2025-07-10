@@ -70,6 +70,15 @@ export default function RegisterPage() {
           <option value="student">Student</option>
           <option value="lecturer">Lecturer</option>
         </select>
+        {/* Show subject select if role is lecturer */}
+        {form.role === 'lecturer' && (
+          <select onChange={e => setForm({ ...form, subject: e.target.value })}>
+            <option value="">Select Subject</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="AI Ethics & Security">AI Ethics & Security</option>
+          </select>
+        )}
         <button type="submit">Register</button>
       </form>
       <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>

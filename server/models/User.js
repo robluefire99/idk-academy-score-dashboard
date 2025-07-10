@@ -8,7 +8,8 @@ const userSchema = new Schema({
   role:     { type: String, enum: ['admin','lecturer','student'], default: 'student' },
   gender:   { type: String, enum: ['M','F'] },
   isVerified: { type: Boolean, default: false },
-  verificationToken: { type: String }
+  verificationToken: { type: String },
+  subject:  { type: Schema.Types.ObjectId, ref: 'Subject' } // Added subject field for students
 }, { timestamps: true });
 
 userSchema.methods.matchPassword = function(entered) {
