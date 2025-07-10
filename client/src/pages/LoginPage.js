@@ -19,6 +19,7 @@ const googleIcon = (
 export default function LoginPage() {
   const [creds, setCreds] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
@@ -30,10 +31,21 @@ export default function LoginPage() {
     }
   }, [user, navigate]);
 
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('');
+    try {
+      await dispatch(login(creds)).unwrap();
+    } catch (err) {
+      setError(err?.message || 'Login failed');
+    }
+  };
+
   return (
     <div className="main-form">
       <div className="form-title">Login</div>
-      <form onSubmit={e => { e.preventDefault(); dispatch(login(creds)); }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {error && <div className="error-msg">{error}</div>}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <input
           type="email"
           placeholder="Email"
