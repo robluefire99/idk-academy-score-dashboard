@@ -13,7 +13,7 @@ export default function LecturerDashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
-  const { list: scores, meta } = useSelector(s => s.score);
+  const { list: scores = [], meta = {} } = useSelector(s => s.score) || {};
   const [selectedScore, setSelectedScore] = useState(null);
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [page, setPage] = useState(1);
@@ -21,7 +21,8 @@ export default function LecturerDashboard() {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    if (!user || user.role !== 'lecturer') {
+    if (!user) return;
+    if (user.role !== 'lecturer') {
       navigate('/login');
     }
   }, [user, navigate]);
@@ -65,7 +66,7 @@ export default function LecturerDashboard() {
 
   // Group scores by semester and subject
   const semesters = ['2024-S1', '2024-S2', '2025-S1', '2025-S2'];
-  const subjects = Array.isArray(scores) ? Array.from(new Set(scores.map(s => s.subject?.name))) : null;
+  const subjects = Array.isArray(scores) ? Array.from(new Set(scores.map(s => s.subject?.name))) : [];
   const colors = ['#1976d2', '#d32f2f', '#388e3c', '#fbc02d', '#7b1fa2', '#0288d1'];
 
   // For each subject, plot a line for each semester
@@ -99,7 +100,7 @@ export default function LecturerDashboard() {
         <h3>Students for Your Subject(s):</h3>
         {Array.isArray(students) && students.length > 0 ? (
           <ul>
-            {students.map(s => (
+            {(Array.isArray(students) ? students : []).map(s => (
               <li key={s._id}>{s.name} ({s.email}) - {s.subject?.name || 'No subject'}</li>
             ))}
           </ul>

@@ -16,8 +16,9 @@ export default function StudentDashboard() {
   const { subjects } = useSelector(s => s.student);
   const [page, setPage] = useState(1);
   const [feedbackMsg, setFeedbackMsg] = useState('');
-  const [subjectId, setSubjectId] = useState(user?.subject || '');
-  const [showPicker, setShowPicker] = useState(!user?.subject);
+  // Support multiple subjects
+  const [subjectId, setSubjectId] = useState('');
+  const [showPicker, setShowPicker] = useState(!user?.subject || (Array.isArray(user?.subject) && user.subject.length === 0));
 
   useEffect(() => {
     if (!user || user.role !== 'student') {
@@ -46,7 +47,7 @@ export default function StudentDashboard() {
         <div className="dashboard-title">Pick Your Subject</div>
         <select value={subjectId} onChange={e => setSubjectId(e.target.value)}>
           <option value="">Select a subject</option>
-          {subjects.map(s => (
+          {(Array.isArray(subjects) ? subjects : []).map(s => (
             <option key={s._id} value={s._id}>{s.name} (Lecturer: {s.lecturer?.name || s.lecturer})</option>
           ))}
         </select>
@@ -57,19 +58,43 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-title">My Course Scores</div>
+      <div className="dashboard-title" style={{ fontWeight: 'bold', fontSize: 24, marginBottom: 8 }}>My Course Scores</div>
+      {Array.isArray(user?.subject) && user.subject.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ fontSize: 18 }}>
+            Subjects:
+            <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
+              {user.subject.map((subj, idx) => (
+                <li key={subj._id || idx}>
+                  <b>{subj.name}</b>
+                  {subj.lecturer && (
+                    <> &nbsp;| Lecturer: <b>{subj.lecturer.name}</b></>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </span>
+        </div>
+      )}
       <div className="dashboard-controls">
         <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>Prev</button>
         <span>{page} / {meta.totalPages||1}</span>
         <button onClick={()=>setPage(p=>Math.min(meta.totalPages,p+1))} disabled={page===meta.totalPages}>Next</button>
       </div>
       <table className="dashboard-table">
-        <thead><tr><th>Subject</th><th>Lecturer</th><th>Score</th><th>Feedback</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Semester</th>
+            <th>Subject</th>
+            <th>Score</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
         <tbody>
           {(Array.isArray(scores) ? scores : []).map(s=>(
             <tr key={s._id}>
+              <td>{s.subject?.semester || '—'}</td>
               <td>{s.subject?.name || '—'}</td>
-              <td>{s.subject?.lecturer?.name || '—'}</td>
               <td>{s.score ?? '—'}</td>
               <td>{s.feedback ? <button onClick={()=>setFeedbackMsg(s.feedback)}>View</button> : 'No Feedback'}</td>
             </tr>

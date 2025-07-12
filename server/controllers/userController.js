@@ -18,9 +18,19 @@ exports.pickSubject = async (req, res) => {
   if (req.user.role !== 'student') return res.status(403).json({ message: 'Only students can pick a subject.' });
   const { subjectId } = req.body;
   if (!subjectId) return res.status(400).json({ message: 'Subject ID is required.' });
-  req.user.subject = subjectId;
+  // Allow picking any or all subjects, prevent duplicates
+  if (!Array.isArray(req.user.subject)) req.user.subject = [];
+  if (!req.user.subject.map(id => id.toString()).includes(subjectId)) {
+    req.user.subject.push(subjectId);
+  }
+  req.user.profileComplete = true;
   await req.user.save();
-  res.json({ message: 'Subject updated', subject: subjectId });
+  // Populate all subjects and lecturer for response
+  const populatedUser = await User.findById(req.user._id).populate({
+    path: 'subject',
+    populate: { path: 'lecturer', select: 'name email' }
+  });
+  res.json({ message: 'Subject(s) updated', subject: populatedUser.subject });
 };
 
 // Lecturer: Get students who picked this lecturer's subject(s)

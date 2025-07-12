@@ -64,6 +64,18 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
-exports.getMe = (req, res) => {
-  res.json({ id: req.user._id, name: req.user.name, role: req.user.role, email: req.user.email });
+exports.getMe = async (req, res) => {
+  // Populate all subjects and lecturer for the current user
+  const user = await User.findById(req.user._id)
+    .populate({
+      path: 'subject',
+      populate: { path: 'lecturer', select: 'name email' }
+    });
+  res.json({
+    id: user._id,
+    name: user.name,
+    role: user.role,
+    email: user.email,
+    subject: user.subject // This will be an array of subjects with lecturer info
+  });
 };

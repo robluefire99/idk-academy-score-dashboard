@@ -10,7 +10,7 @@ export default function Chart({ datasets, labels }) {
       type: 'line',
       data: {
         labels,
-        datasets: datasets.map(ds => ({
+        datasets: (Array.isArray(datasets) ? datasets : []).map(ds => ({
           ...ds,
           fill: false,
           tension: 0.1

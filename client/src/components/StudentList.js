@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 export default function StudentList({ students, onSelect }) {
+  const safeStudents = Array.isArray(students) ? students : [];
   const [page, setPage] = useState(1);
   const studentsPerPage = 15;
-  const totalPages = Math.ceil(students.length / studentsPerPage);
+  const totalPages = Math.ceil(safeStudents.length / studentsPerPage) || 1;
   const startIdx = (page - 1) * studentsPerPage;
-  const currentStudents = students.slice(startIdx, startIdx + studentsPerPage);
+  const currentStudents = safeStudents.slice(startIdx, startIdx + studentsPerPage);
 
   return (
     <div>

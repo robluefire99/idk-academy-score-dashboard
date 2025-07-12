@@ -10,7 +10,10 @@ router.post('/complete-profile', passport.authenticate('jwt', { session: false }
 router.get('/google', (req, res, next) => {
   console.log('Google OAuth endpoint hit');
   next();
-}, passport.authenticate('google', { scope: ['profile','email'] }));
+}, passport.authenticate('google', { 
+  scope: ['profile','email'],
+  prompt: 'select_account consent' 
+}));
 router.get(
   '/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: '/login' }),
