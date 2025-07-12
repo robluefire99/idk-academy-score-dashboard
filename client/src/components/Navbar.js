@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <nav className="main-navbar">
-      <span className="nav-app-title" style={{ fontWeight: 'bold', color: '#1976d2', fontSize: 20, marginRight: 24 }}>
+      <span className="nav-app-title" style={{ fontWeight: 'bold', color: '#043819ff', fontSize: 20, marginRight: 24 }}>
         IDK Academy Score Dashboard
       </span>
       <Link to="/" className="nav-link">Home</Link>

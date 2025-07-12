@@ -1,11 +1,13 @@
+// client/src/pages/LoginPage.js
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from '../redux/authSlice';
+import { useDispatch }      from 'react-redux';
+import { login }            from '../redux/authSlice';
 import '../styles/modern.css';
-import GoogleIcon from '../assets/google-icon.png'; // put a small Google logo in this path
+import googleIcon from '../asset/google-icon.png';
+import bgImage    from '../asset/login-bg.jpg';
 
 export default function LoginPage() {
-  const [creds, setCreds] = useState({ email: '', password: '', keep: false });
+  const [creds, setCreds] = useState({ email:'', password:'', keep:false });
   const dispatch = useDispatch();
 
   const handleSubmit = e => {
@@ -14,11 +16,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-page">
+    <div
+      className="login-page"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize:   'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center'
+      }}
+    >
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Log In</h2>
-
-        {/* Email */}
+        <h2>Welcome to IDK Academy</h2>
+        <h3>Sign in to your account</h3>
         <div className="input-group">
           <input
             type="email"
@@ -30,7 +39,6 @@ export default function LoginPage() {
           <span className="icon">📧</span>
         </div>
 
-        {/* Password */}
         <div className="input-group">
           <input
             type="password"
@@ -42,7 +50,6 @@ export default function LoginPage() {
           <span className="icon">🔒</span>
         </div>
 
-        {/* Keep Me Logged In */}
         <div className="actions">
           <label>
             <input
@@ -54,23 +61,18 @@ export default function LoginPage() {
           </label>
         </div>
 
-        {/* Primary Login Button */}
-        <button type="submit" className="primary">
-          LOG IN
-        </button>
+        <button type="submit" className="primary">LOG IN</button>
 
-        {/* Footer Links */}
         <div className="footer-links">
           <a href="/forgot-password">Forgot Password?</a>
           <a href="/register">New User? Register</a>
         </div>
 
-        {/* Only Google Login */}
         <div className="social-login">
           <span>Or login using Google</span>
           <br />
           <a href="/api/auth/google">
-            <img src={GoogleIcon} alt="Google Login" />
+            <img src={googleIcon} alt="Login with Google" />
           </a>
         </div>
       </form>
