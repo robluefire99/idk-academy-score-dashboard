@@ -27,7 +27,8 @@ export default function Navbar() {
       {user && (
         <>
           <span className="nav-user-info">
-            Welcome, {user.name} ({user.role.charAt(0).toUpperCase() + user.role.slice(1)})
+            Welcome, {user.name}
+            {user.role ? ` (${user.role.charAt(0).toUpperCase() + user.role.slice(1)})` : ''}
           </span>
           <button className="nav-logout-btn" onClick={handleLogout}>Logout</button>
         </>

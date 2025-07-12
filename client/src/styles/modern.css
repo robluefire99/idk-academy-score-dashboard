@@ -99,6 +99,16 @@ nav a:hover {
   border-radius: 4px;
 }
 
+.input-group select {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem; /* Match input padding */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  box-sizing: border-box;
+}
+
 .input-group .icon {
   position: absolute;
   right: 1rem;

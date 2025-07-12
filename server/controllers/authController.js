@@ -1,3 +1,21 @@
+// Complete Google OAuth profile
+exports.completeProfile = async (req, res) => {
+  try {
+    const { role, subject } = req.body;
+    if (!role || (role === 'lecturer' && !subject)) {
+      return res.status(400).json({ message: 'Role and subject (if lecturer) are required.' });
+    }
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+    user.role = role;
+    if (role === 'lecturer') user.subject = subject;
+    user.profileComplete = true;
+    await user.save();
+    res.json({ message: 'Profile completed.' });
+  } catch (e) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');

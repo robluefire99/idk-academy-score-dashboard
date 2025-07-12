@@ -9,7 +9,8 @@ const userSchema = new Schema({
   gender:   { type: String, enum: ['M','F'] },
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
-  subject:  { type: Schema.Types.ObjectId, ref: 'Subject' } // Added subject field for students
+  subject:  { type: Schema.Types.ObjectId, ref: 'Subject' }, // Added subject field for students
+  profileComplete: { type: Boolean, default: false } // For Google OAuth users to complete profile
 }, { timestamps: true });
 
 userSchema.methods.matchPassword = function(entered) {

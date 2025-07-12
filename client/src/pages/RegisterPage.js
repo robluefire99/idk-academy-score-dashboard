@@ -6,6 +6,7 @@ import '../styles/modern.css';
 // asset imports—only these two
 import googleIcon from '../asset/google-icon.png';
 import bgImage    from '../asset/login-bg.jpg';
+import ColoredSelect from '../components/ColoredSelect';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ role: 'student', name: '', email: '', password: '' });
@@ -16,8 +17,11 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('/api/subjects/all')
-      .then(res => setSubjects(res.data))
+    axios.get('/api/subjects')
+      .then(res => {
+      console.log('Subjects:', res.data); // <-- Add this line
+      setSubjects(res.data);
+    })
       .catch(() => setSubjects([]));
   }, []);
 
@@ -83,6 +87,7 @@ export default function RegisterPage() {
             placeholder="Password"
             value={form.password}
             onChange={e => setForm({ ...form, password: e.target.value })}
+            style={{ paddingRight: '40px' }} // Add padding to make space for the button
             required
           />
           <button
@@ -90,37 +95,43 @@ export default function RegisterPage() {
             className="password-toggle-btn"
             onClick={() => setShowPassword(v => !v)}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+            }}
           >
-            {showPassword ? '🙈' : '👁️'}
+            {showPassword ? '🙈' : '👁️'} 
           </button>
         </div>
 
         {/* Role selector */}
         <div className="input-group">
-          <select
+          <ColoredSelect
             value={form.role}
             onChange={e => setForm({ ...form, role: e.target.value, subject: undefined })}
-          >
-            <option value="student">Student</option>
-            <option value="lecturer">Lecturer</option>
-          </select>
+            options={[
+              { value: 'student', label: 'Student' },
+              { value: 'lecturer', label: 'Lecturer' }
+            ]}
+            placeholder="Select Role"
+          />
         </div>
 
         {/* Subject picker for lecturers */}
         {showSubjectPicker && (
           <div className="input-group">
-            <select
+            <ColoredSelect
               value={form.subject || ''}
               onChange={e => setForm({ ...form, subject: e.target.value })}
+              options={subjects.map((s) => ({ value: s._id, label: `Sem ${s.semester} — ${s.name}` }))}
+              placeholder="Select Subject"
               required
-            >
-              <option value="">Select Subject</option>
-              {subjects.map(s => (
-                <option key={s._id} value={s._id}>
-                  Sem {s.semester} — {s.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         )}
 
@@ -138,7 +149,7 @@ export default function RegisterPage() {
         <div className="social-login">
           <span>Or register using Google</span>
           <br />
-          <a href="/api/auth/google">
+          <a href="http://localhost:5000/api/auth/google">
             <img src={googleIcon} alt="Register with Google" />
           </a>
         </div>

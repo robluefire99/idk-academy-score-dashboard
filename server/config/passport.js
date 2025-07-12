@@ -31,8 +31,8 @@ passport.use(new GoogleStrategy({
         name,
         email,
         password: 'GOOGLE_OAUTH',
-        role: 'student',
-        isVerified: true
+        isVerified: true,
+        profileComplete: false // Mark as incomplete, no role/subject yet
       });
     }
     return done(null, user);

@@ -16,7 +16,9 @@ export default function OAuthHandler() {
       dispatch(login.fulfilled({ token, id: null, name: null, role: null }));
       dispatch(loadMe()).then(res => {
         const userData = res.payload;
-        if (userData && userData.role) {
+        if (userData && userData.profileComplete === false) {
+          navigate(`/complete-profile?token=${token}`);
+        } else if (userData && userData.role) {
           if (userData.role === 'lecturer') navigate('/lecturer');
           else navigate('/student');
         } else {

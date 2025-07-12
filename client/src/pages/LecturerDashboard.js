@@ -65,7 +65,7 @@ export default function LecturerDashboard() {
 
   // Group scores by semester and subject
   const semesters = ['2024-S1', '2024-S2', '2025-S1', '2025-S2'];
-  const subjects = Array.isArray(scores) ? Array.from(new Set(scores.map(s => s.subject?.name))) : [];
+  const subjects = Array.isArray(scores) ? Array.from(new Set(scores.map(s => s.subject?.name))) : null;
   const colors = ['#1976d2', '#d32f2f', '#388e3c', '#fbc02d', '#7b1fa2', '#0288d1'];
 
   // For each subject, plot a line for each semester
@@ -115,7 +115,7 @@ export default function LecturerDashboard() {
         <tbody>
           {Array.isArray(scores) ? scores.map(s => (
             <tr key={s._id}>
-              <td>{s.student.name}</td>
+              <td>{s.student?.name || '—'}</td>
               <td>{s.score}</td>
               <td>
                 <input
